@@ -6,7 +6,7 @@ require.config({
 
 		'modernizr' : 'modernizr.custom.56571',
 		'prettify' : 'prettify/prettify',
-		'hammer' : 'hammer',
+		'hammer' : 'hammer.min',
 	},
 
 	shim : {

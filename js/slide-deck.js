@@ -415,8 +415,9 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 		this.container.appendChild(el);
 	}
 
-	if (Modernizr.touch
-			&& (!!!('enableTouch' in settings) || settings.enableTouch)) {
+	if (/*
+		 * Modernizr.touch &&
+		 */(!!!('enableTouch' in settings) || settings.enableTouch)) {
 		var self = this;
 
 		// Note: this prevents mobile zoom in/out but prevents iOS from doing
@@ -425,13 +426,13 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 			e.preventDefault();
 		}, false);
 
-		require([ 'hammer' ], function() {
-			var hammer = new Hammer(this.container);
-			hammer.ondragend = function(e) {
+		require([ 'hammer' ], function(Hammer) {
+			var hammer = new Hammer(self.container);
+			hammer.on('swipe', function(e) {
 				var evt = document.createEvent('Event');
 				evt.initEvent('keydown', true, true);
 
-				switch (e.direction) {
+				switch (e.gesture.direction) {
 					case 'right':
 						// previous slide
 						evt.keyCode = 37;
@@ -443,7 +444,7 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 				}
 
 				document.dispatchEvent(evt);
-			};
+			});
 		});
 
 	}
