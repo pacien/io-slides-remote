@@ -4,7 +4,7 @@ require.config({
 		'slide-controller' : 'slide-controller',
 		'slide-deck' : 'slide-deck',
 
-		'modernizr' : 'modernizr.custom.45394',
+		'modernizr' : 'modernizr.custom.56571',
 		'prettify' : 'prettify/prettify',
 		'hammer' : 'hammer',
 	},
