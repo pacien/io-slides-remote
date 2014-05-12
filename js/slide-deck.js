@@ -315,7 +315,9 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 
 	// Prettyprint. Default to on.
 	if (!!!('usePrettify' in settings) || settings.usePrettify) {
-		prettyPrint();
+		require([ 'prettify' ], function() {
+			prettyPrint();
+		});
 	}
 
 	if (settings.analytics) {
@@ -423,24 +425,27 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 			e.preventDefault();
 		}, false);
 
-		var hammer = new Hammer(this.container);
-		hammer.ondragend = function(e) {
-			var evt = document.createEvent('Event');
-			evt.initEvent('keydown', true, true);
+		require([ 'hammer' ], function() {
+			var hammer = new Hammer(this.container);
+			hammer.ondragend = function(e) {
+				var evt = document.createEvent('Event');
+				evt.initEvent('keydown', true, true);
 
-			switch (e.direction) {
-				case 'right':
-					// previous slide
-					evt.keyCode = 37;
-					break;
-				case 'left':
-					// next slide
-					evt.keyCode = 39;
-					break;
-			}
+				switch (e.direction) {
+					case 'right':
+						// previous slide
+						evt.keyCode = 37;
+						break;
+					case 'left':
+						// next slide
+						evt.keyCode = 39;
+						break;
+				}
 
-			document.dispatchEvent(evt);
-		};
+				document.dispatchEvent(evt);
+			};
+		});
+
 	}
 };
 

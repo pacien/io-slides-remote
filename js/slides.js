@@ -11,11 +11,11 @@ require.config({
 
 	shim : {
 		'slide-deck' : {
-			deps : ['slide_config', 'slide-controller', 'modernizr', 'hammer']
+			deps : ['slide_config', 'slide-controller', 'modernizr']
 		}
 	}
 });
 
-require(['slide-deck', 'prettify'], function(someModule) {
+require(['slide-deck'], function(someModule) {
 
 });
