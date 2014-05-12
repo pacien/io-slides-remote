@@ -126,9 +126,10 @@
 	}
 
 	SlideController.prototype.onMessage_ = function(e) {
-		console.log("Received event: " + JSON.stringify(e));
 
 		var data = e.data;
+
+		console.log("Received event: " + JSON.stringify(data));
 
 		// Restrict messages to being from this origin. Allow local developmet
 		// from file:// though.
