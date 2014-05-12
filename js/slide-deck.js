@@ -65,7 +65,7 @@ SlideDeck.prototype.loadSlide = function(slideNo) {
  */
 SlideDeck.prototype.onDomLoaded_ = function(e) {
 	document.body.classList.add('loaded'); // Add loaded class for templates to
-											// use.
+	// use.
 
 	this.slides = this.container
 			.querySelectorAll('slide:not([hidden]):not(.hidden):not(.backdrop)');
@@ -111,7 +111,7 @@ SlideDeck.prototype.onDomLoaded_ = function(e) {
 	// // Also, no need to set this up if we're on mobile.
 	// if (!Modernizr.touch) {
 	this.controller = new SlideController(this);
-	if (this.controller.isPopup) {
+	if (this.controller.isPresenter) {
 		document.body.classList.add('popup');
 	}
 	// }
@@ -177,7 +177,7 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 	}
 
 	// Forward keydowns to the main slides if we're the popup.
-	if (this.controller && this.controller.isPopup) {
+	if (this.controller && this.controller.isPresenter) {
 		this.controller.sendMsg({
 			keyCode : e.keyCode
 		});
@@ -223,7 +223,7 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 			break;
 
 		case 80: // P
-			if (this.controller && this.controller.isPopup) {
+			if (this.controller && this.controller.isPresenter) {
 				document.body.classList.toggle('with-notes');
 			} else if (this.controller && !this.controller.popup) {
 				document.body.classList.toggle('with-notes');
@@ -275,7 +275,7 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 };
 
 /**
- *
+ * 
  */
 SlideDeck.prototype.focusOverview_ = function() {
 	var overview = document.body.classList.contains('overview');
@@ -425,11 +425,21 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 
 		var hammer = new Hammer(this.container);
 		hammer.ondragend = function(e) {
-			if (e.direction == 'right' || e.direction == 'down') {
-				self.prevSlide();
-			} else if (e.direction == 'left' || e.direction == 'up') {
-				self.nextSlide();
+			var evt = document.createEvent('Event');
+			evt.initEvent('keydown', true, true);
+
+			switch (e.direction) {
+				case 'right':
+					// previous slide
+					evt.keyCode = 37;
+					break;
+				case 'left':
+					// next slide
+					evt.keyCode = 39;
+					break;
 			}
+
+			document.dispatchEvent(evt);
 		};
 	}
 };
@@ -488,7 +498,7 @@ SlideDeck.prototype.prevSlide = function(opt_dontPush) {
 		// Toggle off speaker notes if they're showing when we move backwards on
 		// the
 		// main slides. If we're the speaker notes popup, leave them up.
-		if (this.controller && !this.controller.isPopup) {
+		if (this.controller && !this.controller.isPresenter) {
 			bodyClassList.remove('with-notes');
 		} else if (!this.controller) {
 			bodyClassList.remove('with-notes');
@@ -516,7 +526,7 @@ SlideDeck.prototype.nextSlide = function(opt_dontPush) {
 		// Toggle off speaker notes if they're showing when we advanced on the
 		// main
 		// slides. If we're the speaker notes popup, leave them up.
-		if (this.controller && !this.controller.isPopup) {
+		if (this.controller && !this.controller.isPresenter) {
 			bodyClassList.remove('with-notes');
 		} else if (!this.controller) {
 			bodyClassList.remove('with-notes');

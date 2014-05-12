@@ -1,82 +1,140 @@
+/**
+ * Remote control by:
+ * 
+ * @authors Pacien TRAN-GIRARD
+ */
 (function(window) {
 
 	var ORIGIN_ = location.protocol + '//' + location.host;
 
-	function SlideController() {
-		this.popup = null;
-		this.isPopup = window.opener;
+	function SlideController(deck) {
+		this.deck = deck;
 
-		if (this.setupDone()) {
-			window.addEventListener('message', this.onMessage_.bind(this),
-					false);
+		this.mode = null;
+		this.remoteSocket = null;
+		this.isPresenter = window.opener;
 
-			// Close popups if we reload the main window.
-			window.addEventListener('beforeunload', function(e) {
-				if (this.popup) {
-					this.popup.close();
-				}
-			}.bind(this), false);
-		}
+		this.keyLock = null;
+
+		this.setup();
 	}
 
-	SlideController.PRESENTER_MODE_PARAM = 'presentme';
+	SlideController.MODES = [ 'local', 'remote', 'controller' ];
 
-	SlideController.prototype.setupDone = function() {
+	SlideController.prototype.setup = function() {
+
+		var self = this;
+
+		// find the current mode
 		var params = location.search.substring(1).split('&').map(function(el) {
 			return el.split('=');
 		});
 
-		var presentMe = null;
-		for (var i = 0, param; param = params[i]; ++i) {
-			if (param[0].toLowerCase() == SlideController.PRESENTER_MODE_PARAM) {
-				presentMe = param[1] == 'true';
+		var paramKeys = params[0];
+
+		SlideController.MODES.forEach(function(element, index, array) {
+			if (paramKeys.indexOf(element) > -1) {
+				self.mode = element;
+				return;
+			}
+		});
+
+		console.log("Control mode: " + this.mode);
+
+		// clean the location bar
+		// if (this.mode !== null) {
+		// // localStorage.ENABLE_PRESENTOR_MODE = presentMe;
+		// if (window.history.pushState) {
+		// window.history.pushState({}, '', location.pathname);
+		// } else if (window.history.replaceState) {
+		// window.history.replaceState({}, '', location.pathname);
+		// }
+		// // else {
+		// // location.replace(location.pathname);
+		// // return false;
+		// // }
+		// }
+
+		// activate the mode specific behaviour
+		switch (this.mode) {
+
+			case 'local':
+				// Only open popup from main deck. Avoid recursive popupception.
+				if (!this.isPresenter) {
+					var opts = 'menubar=no,location=yes,resizable=yes,scrollbars=no,status=no';
+					var localPresenter = window.open(location.href, 'mywindow',
+							opts);
+
+					// Loading in the popup? Turn the presenter mode on.
+					localPresenter.addEventListener('load', function(e) {
+						localPresenter.document.body.classList
+								.add('with-notes');
+					}.bind(this), false);
+
+					window.addEventListener('message', this.onMessage_
+							.bind(this), false);
+
+					// Close popups if we reload the main window.
+					window.addEventListener('beforeunload', function(e) {
+						localPresenter.close();
+					}.bind(this), false);
+				}
+
 				break;
-			}
-		}
 
-		if (presentMe !== null) {
-			localStorage.ENABLE_PRESENTOR_MODE = presentMe;
-			// TODO: use window.history.pushState to update URL instead of the
-			// redirect.
-			if (window.history.replaceState) {
-				window.history.replaceState({}, '', location.pathname);
-			} else {
-				location.replace(location.pathname);
-				return false;
-			}
-		}
+			case 'controller':
+				this.isPresenter = true;
+				document.body.classList.add('popup');
+				document.body.classList.add('with-notes');
+				var password = prompt("Broadcaster password");
 
-		var enablePresenterMode = localStorage.getItem('ENABLE_PRESENTOR_MODE');
-		if (enablePresenterMode && JSON.parse(enablePresenterMode)) {
-			// Only open popup from main deck. Don't want recursive popup
-			// opening!
-			if (!this.isPopup) {
-				var opts = 'menubar=no,location=yes,resizable=yes,scrollbars=no,status=no';
-				this.popup = window.open(location.href, 'mywindow', opts);
+			case 'remote':
+				var addr = this.deck.config_.settings.remoteSocket;
+				var channel = this.deck.config_.settings.remoteChannel;
+				var password = (password != null) ? password : '';
+				this.remoteSocket = io.connect(addr, {
+					'query' : 'channel=' + channel + '&password=' + password,
+					'force new connection' : true,
+				});
 
-				// Loading in the popup? Trigger the hotkey for turning
-				// presenter mode on.
-				this.popup.addEventListener('load', function(e) {
-					var evt = this.popup.document.createEvent('Event');
-					evt.initEvent('keydown', true, true);
-					evt.keyCode = 'P'.charCodeAt(0);
-					this.popup.document.dispatchEvent(evt);
-					// this.popup.document.body.classList.add('with-notes');
-					// document.body.classList.add('popup');
-				}.bind(this), false);
-			}
+				this.remoteSocket.on('connect', function() {
+					var message = 'Connected to ' + channel + '@' + addr;
+					console.log(message);
+					alert(message);
+				});
+
+				this.remoteSocket.on('disconnect', function() {
+					var message = 'Diconnected from' + channel + '@' + addr;
+					console.log(message);
+					alert(message);
+				});
+
+				this.remoteSocket.on('message', function(message) {
+					console.log('Received from remote: ' + message);
+					self.onMessage_({
+						data : {
+							keyCode : parseInt(message[0])
+						}
+					});
+				});
+
+				break;
+
 		}
 
 		return true;
 	}
 
 	SlideController.prototype.onMessage_ = function(e) {
+		console.log("Received event: " + JSON.stringify(e));
+
 		var data = e.data;
 
 		// Restrict messages to being from this origin. Allow local developmet
 		// from file:// though.
 		// TODO: It would be dope if FF implemented location.origin!
-		if (e.origin != ORIGIN_ && ORIGIN_.indexOf('file://') != 0) {
+		if (this.mode === 'local' && e.origin != ORIGIN_
+				&& ORIGIN_.indexOf('file://') != 0) {
 			alert('Someone tried to postMessage from an unknown origin');
 			return;
 		}
@@ -87,6 +145,8 @@
 		// }
 
 		if ('keyCode' in data) {
+			this.keyLock = data.keyCode;
+
 			var evt = document.createEvent('Event');
 			evt.initEvent('keydown', true, true);
 			evt.keyCode = data.keyCode;
@@ -95,15 +155,28 @@
 	};
 
 	SlideController.prototype.sendMsg = function(msg) {
+
+		if (msg.keyCode === this.keyLock) {
+			this.keyLock = null;
+			return;
+		}
+
+		console.log("Sending: " + JSON.stringify(msg));
+
 		// // Send message to popup window.
-		// if (this.popup) {
-		// this.popup.postMessage(msg, ORIGIN_);
+		// if (this.localPresenter) {
+		// this.localPresenter.postMessage(msg, ORIGIN_);
 		// }
 
 		// Send message to main window.
-		if (this.isPopup) {
-			// TODO: It would be dope if FF implemented location.origin.
-			window.opener.postMessage(msg, '*');
+		if (this.isPresenter) {
+			if (this.mode === 'local') {
+				// TODO: It would be dope if FF implemented location.origin.
+				window.opener.postMessage(msg, '*');
+			}
+			if (this.mode === 'controller') {
+				this.remoteSocket.emit('message', msg.keyCode);
+			}
 		}
 	};
 
