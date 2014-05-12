@@ -1,6 +1,21 @@
-require([ 'order!../slide_config', 'order!modernizr.custom.45394',
-		'order!prettify/prettify', 'order!hammer',
-		'order!//webcastor.herokuapp.com/socket.io/socket.io.js',
-		'order!slide-controller', 'order!slide-deck' ], function(someModule) {
+require.config({
+	paths : {
+		'slide_config' : '../slide_config',
+		'slide-controller' : 'slide-controller',
+		'slide-deck' : 'slide-deck',
+
+		'modernizr' : 'modernizr.custom.45394',
+		'prettify' : 'prettify/prettify',
+		'hammer' : 'hammer',
+	},
+
+	shim : {
+		'slide-deck' : {
+			deps : ['slide_config', 'slide-controller', 'modernizr', 'hammer']
+		}
+	}
+});
+
+require(['slide-deck', 'prettify'], function(someModule) {
 
 });
