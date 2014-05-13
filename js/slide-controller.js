@@ -146,6 +146,10 @@
 		// }
 
 		if ('keyCode' in data) {
+			if (isNaN(data.keyCode)) {
+				return;
+			}
+
 			this.keyLock = data.keyCode;
 
 			var evt = document.createEvent('Event');
