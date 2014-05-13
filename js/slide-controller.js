@@ -101,6 +101,7 @@
 
 					self.remoteSocket.on('connecting', function() {
 						console.log('Connecting to ' + channel + '@' + addr);
+						humane.remove();
 						humane.log('Connecting...', {
 							timeout : 0
 						});
@@ -114,6 +115,7 @@
 
 					self.remoteSocket.on('connect_failed', function() {
 						console.log('Error connecting to ' + channel + '@' + addr);
+						humane.remove();
 						humane.log('Connection failed', {
 							timeout : 0
 						});
@@ -121,6 +123,7 @@
 
 					self.remoteSocket.on('error', function() {
 						console.log('Error on ' + channel + '@' + addr);
+						humane.remove();
 						humane.log('Error', {
 							timeout : 0
 						});
