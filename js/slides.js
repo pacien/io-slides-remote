@@ -7,6 +7,8 @@ require.config({
 		'modernizr' : 'modernizr.custom.56571',
 		'prettify' : 'prettify/prettify',
 		'hammer' : 'hammer.min',
+
+		'analytics' : 'https://www.google-analytics.com/ga'
 	},
 
 	shim : {
@@ -16,6 +18,4 @@ require.config({
 	}
 });
 
-require(['slide-deck'], function(someModule) {
-
-});
+require(['slide-deck']);
