@@ -8,14 +8,17 @@ require.config({
 		'prettify' : 'prettify/prettify',
 		'hammer' : 'hammer.min',
 
-		'analytics' : 'https://www.google-analytics.com/ga'
+		'humane' : 'humane/humane.min',
+		'humane-themed' : 'humane/humane-themed',
+
+		'analytics' : 'https://www.google-analytics.com/ga',
 	},
 
 	shim : {
 		'slide-deck' : {
-			deps : ['slide_config', 'slide-controller', 'modernizr']
-		}
-	}
+			deps : ['slide_config', 'slide-controller', 'modernizr'],
+		},
+	},
 });
 
 require(['slide-deck']);

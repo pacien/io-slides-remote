@@ -87,26 +87,49 @@
 				var password = prompt("Broadcaster password");
 
 			case 'remote':
+
 				var addr = this.deck.config_.settings.remoteSocket;
 				var channel = this.deck.config_.settings.remoteChannel;
 				var password = (password != null) ? password : '';
 
-				require([addr + 'socket.io/socket.io.js'], function(io) {
+				require(['humane-themed', addr + 'socket.io/socket.io.js'], function(humane, io) {
+
 					self.remoteSocket = io.connect(addr, {
 						'query' : 'channel=' + channel + '&password=' + password,
 						'force new connection' : true,
 					});
 
+					self.remoteSocket.on('connecting', function() {
+						console.log('Connecting to ' + channel + '@' + addr);
+						humane.log('Connecting...', {
+							timeout : 0
+						});
+					});
+
 					self.remoteSocket.on('connect', function() {
-						var message = 'Connected to ' + channel + '@' + addr;
-						console.log(message);
-						alert(message);
+						console.log('Connected to ' + channel + '@' + addr);
+						humane.remove();
+						humane.log('Connected');
+					});
+
+					self.remoteSocket.on('connect_failed', function() {
+						console.log('Error connecting to ' + channel + '@' + addr);
+						humane.log('Connection failed', {
+							timeout : 0
+						});
+					});
+
+					self.remoteSocket.on('error', function() {
+						console.log('Error on ' + channel + '@' + addr);
+						humane.log('Error', {
+							timeout : 0
+						});
 					});
 
 					self.remoteSocket.on('disconnect', function() {
-						var message = 'Diconnected from' + channel + '@' + addr;
-						console.log(message);
-						alert(message);
+						console.log('Diconnected from' + channel + '@' + addr);
+						humane.remove();
+						humane.log('Disconnected');
 					});
 
 					self.remoteSocket.on('message', function(message) {
