@@ -13,6 +13,7 @@
 		this.mode = null;
 		this.remoteSocket = null;
 		this.isPresenter = window.opener;
+		this.isController = window.opener;
 
 		this.keyLock = null;
 
@@ -20,7 +21,7 @@
 	}
 
 
-	SlideController.MODES = ['local', 'remote', 'controller'];
+	SlideController.MODES = ['local', 'remote', 'controller', 'presenter'];
 
 	SlideController.prototype.setup = function() {
 
@@ -80,9 +81,12 @@
 
 				break;
 
-			case 'controller':
+			case 'presenter':
 				this.isPresenter = true;
 				document.body.classList.add('popup');
+
+			case 'controller':
+				this.isController = true;
 				document.body.classList.add('with-notes');
 				var password = prompt("Broadcaster password");
 
@@ -192,6 +196,11 @@
 			return;
 		}
 
+		// don't toggle speaker's notes for viewers
+		if (msg.keyCode === 80) {
+			return;
+		}
+
 		console.log("Sending: " + JSON.stringify(msg));
 
 		// // Send message to popup window.
@@ -200,13 +209,15 @@
 		// }
 
 		// Send message to main window.
-		if (this.isPresenter) {
-			if (this.mode === 'local') {
-				// TODO: It would be dope if FF implemented location.origin.
-				window.opener.postMessage(msg, '*');
-			}
-			if (this.mode === 'controller') {
-				this.remoteSocket.emit('message', msg.keyCode);
+		if (this.isController) {
+			switch (this.mode) {
+				case 'local':
+					// TODO: It would be dope if FF implemented location.origin.
+					window.opener.postMessage(msg, '*');
+					break;
+				case 'controller':
+				case 'presenter':
+					this.remoteSocket.emit('message', msg.keyCode);
 			}
 		}
 	};

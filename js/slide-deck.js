@@ -177,7 +177,7 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 	}
 
 	// Forward keydowns to the main slides if we're the popup.
-	if (this.controller && this.controller.isPresenter) {
+	if (this.controller && this.controller.isController) {
 		this.controller.sendMsg({
 			keyCode : e.keyCode
 		});
@@ -504,11 +504,11 @@ SlideDeck.prototype.prevSlide = function(opt_dontPush) {
 		// Toggle off speaker notes if they're showing when we move backwards on
 		// the
 		// main slides. If we're the speaker notes popup, leave them up.
-		if (this.controller && !this.controller.isPresenter) {
-			bodyClassList.remove('with-notes');
-		} else if (!this.controller) {
-			bodyClassList.remove('with-notes');
-		}
+		// if (this.controller && !this.controller.isPresenter) {
+		// bodyClassList.remove('with-notes');
+		// } else if (!this.controller) {
+		// bodyClassList.remove('with-notes');
+		// }
 
 		this.prevSlide_ = this.curSlide_--;
 
@@ -532,11 +532,11 @@ SlideDeck.prototype.nextSlide = function(opt_dontPush) {
 		// Toggle off speaker notes if they're showing when we advanced on the
 		// main
 		// slides. If we're the speaker notes popup, leave them up.
-		if (this.controller && !this.controller.isPresenter) {
-			bodyClassList.remove('with-notes');
-		} else if (!this.controller) {
-			bodyClassList.remove('with-notes');
-		}
+		// if (this.controller && !this.controller.isPresenter) {
+		// bodyClassList.remove('with-notes');
+		// } else if (!this.controller) {
+		// bodyClassList.remove('with-notes');
+		// }
 
 		this.prevSlide_ = this.curSlide_++;
 
