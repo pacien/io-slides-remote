@@ -128,8 +128,10 @@ URL: https://code.google.com/p/io-2012-slides
                             All <a href="http://google.com">links</a> open in new tabs.
                         </li>
                         <li>
-                            To change that this, add <code>
-                                target="_self"</code>
+                            To change that this, add
+                            <code>
+                                target="_self"
+                            </code>
                             to the link.
                         </li>
                     </ul>
@@ -147,7 +149,8 @@ URL: https://code.google.com/p/io-2012-slides
                     <p>
                         Press 'h' to highlight important sections of code (wrapped in
                         <code>
-                            &lt;b&gt;</code>
+                            &lt;b&gt;
+                        </code>
                         ).
                     </p>
                     <pre class="prettyprint" data-lang="javascript">
@@ -244,21 +247,42 @@ function helloWorld(world) {
                     <h2>Presenter Mode</h2>
                 </hgroup>
                 <article>
-                    <p>
-                        Add
-                        <code>
-                            <a href="?presentme=true" target="_self">?presentme=true</a>
-                        </code>
-                        to the URL to enabled presenter mode. This setting is sticky, meaning
-                        refreshing the page will persist presenter mode.
-                    </p>
-                    <p>
-                        Hit
-                        <code>
-                            <a href="?presentme=false" target="_self">?presentme=false</a>
-                        </code>
-                        to disable presenter mode.
-                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mode</th>
+                                <th>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>View</td>
+                                <td></td>
+                                <td>Displays the slides locally.</td>
+                            </tr>
+                            <tr>
+                                <td>Local presentation</td>
+                                <td><a href="https://pacientrangirard-io-slides-remote.googlecode.com/git/template.html?local">?local</a></td>
+                                <td>Displays the slides locally and opens a local presenter window.<br>Useful if you want to show the presentation on a projector connected to your laptop.</td>
+                            </tr>
+                            <tr>
+                                <td>Remote view</td>
+                                <td><a href="https://pacientrangirard-io-slides-remote.googlecode.com/git/template.html?remote">?remote</a></td>
+                                <td>Synchronizes the slideshow with a remote controller or a remote presenter.<br>Enables the use of a computer already connected to a projector and the your audience to be synced.</td>
+                            </tr>
+                            <tr>
+                                <td>Remote controller</td>
+                                <td><a href="https://pacientrangirard-io-slides-remote.googlecode.com/git/template.html?controller">?controller</a></td>
+                                <td>Allows to control remote views and see notes.<br>Ideal on a tablet or a smartphone while delivering a presentation.</td>
+                            </tr>
+                            <tr>
+                                <td>Remote presenter</td>
+                                <td><a href="https://pacientrangirard-io-slides-remote.googlecode.com/git/template.html?presenter">?presenter</a></td>
+                                <td>Allows to control remote views, see notes and watch current and next slides.<br>Ideal on a laptop on a podium.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </article>
             </slide>
             <slide>
