@@ -21,7 +21,7 @@ var SLIDE_CONFIG = {
 		// theme: ['mytheme'], // Add your own custom themes or styles in
 		// /theme/css. Leave off the .css extension.
 		remoteSocket : "https://webcastor.herokuapp.com/",
-		remoteChannel : "HV2F4V4R",
+		remoteChannel : "HV85QYAQ",
 	},
 
 	// Author information
