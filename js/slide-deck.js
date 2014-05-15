@@ -111,9 +111,9 @@ SlideDeck.prototype.onDomLoaded_ = function(e) {
 	// // Also, no need to set this up if we're on mobile.
 	// if (!Modernizr.touch) {
 	this.controller = new SlideController(this);
-	if (this.controller.isPresenter) {
-		document.body.classList.add('popup');
-	}
+	// if (this.controller.isPresenter) {
+	// document.body.classList.add('popup');
+	// }
 	// }
 };
 
@@ -223,11 +223,11 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 			break;
 
 		case 80: // P
-			if (this.controller && this.controller.isPresenter) {
-				document.body.classList.toggle('with-notes');
-			} else if (this.controller && !this.controller.popup) {
-				document.body.classList.toggle('with-notes');
-			}
+		// if (this.controller && this.controller.isPresenter) {
+			document.body.classList.toggle('with-notes');
+			// } else if (this.controller && !this.controller.popup) {
+			// document.body.classList.toggle('with-notes');
+			// }
 			break;
 
 		case 82: // R

@@ -12,14 +12,13 @@
 
 		this.mode = null;
 		this.remoteSocket = null;
-		this.isPresenter = window.opener;
-		this.isController = window.opener;
+		this.isPresenter = false;
+		this.isController = false;
 
 		this.keyLock = null;
 
 		this.setup();
-	}
-
+	};
 
 	SlideController.MODES = ['local', 'remote', 'controller', 'presenter'];
 
@@ -68,6 +67,7 @@
 
 					// Loading in the popup? Turn the presenter mode on.
 					localPresenter.addEventListener('load', function(e) {
+						localPresenter.document.body.classList.add('popup');
 						localPresenter.document.body.classList.add('with-notes');
 					}.bind(this), false);
 
