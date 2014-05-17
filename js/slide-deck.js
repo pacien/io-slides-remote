@@ -223,7 +223,7 @@ SlideDeck.prototype.onBodyKeyDown_ = function(e) {
 			break;
 
 		case 80: // P
-		// if (this.controller && this.controller.isPresenter) {
+			// if (this.controller && this.controller.isPresenter) {
 			document.body.classList.toggle('with-notes');
 			// } else if (this.controller && !this.controller.popup) {
 			// document.body.classList.toggle('with-notes');
@@ -427,24 +427,31 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 		}, false);
 
 		require([ 'hammer' ], function(Hammer) {
-			var hammer = new Hammer(self.container);
-			hammer.on('swipe', function(e) {
+
+			var pressKey = function(keyCode) {
 				var evt = document.createEvent('Event');
 				evt.initEvent('keydown', true, true);
+				evt.keyCode = keyCode;
+				document.body.dispatchEvent(evt);
+			};
 
-				switch (e.gesture.direction) {
-					case 'right':
-						// previous slide
-						evt.keyCode = 37;
-						break;
-					case 'left':
-						// next slide
-						evt.keyCode = 39;
-						break;
-				}
+			var hammer = new Hammer(self.container);
 
-				document.dispatchEvent(evt);
+			// previous slide
+			hammer.on('swiperight', function() {
+				pressKey(37);
 			});
+
+			// next slide
+			hammer.on('swipeleft', function() {
+				pressKey(39);
+			});
+
+			// fullscreen
+			hammer.on('doubletap', function() {
+				pressKey(70);
+			});
+
 		});
 
 	}
