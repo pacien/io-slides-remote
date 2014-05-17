@@ -3,6 +3,7 @@ require.config({
 		'slide_config' : '../slide_config',
 		'slide-controller' : 'slide-controller',
 		'slide-deck' : 'slide-deck',
+		'slide-elastic' : 'slide-elastic',
 
 		'modernizr' : 'modernizr.custom.56571',
 		'prettify' : 'prettify/prettify',
@@ -18,7 +19,10 @@ require.config({
 		'slide-deck' : {
 			deps : ['slide_config', 'slide-controller', 'modernizr'],
 		},
+		'slide-elastic' : {
+			deps : ['slide-deck'],
+		},
 	},
 });
 
-require(['slide-deck']);
+require(['slide-elastic']);
