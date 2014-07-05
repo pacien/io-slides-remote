@@ -143,7 +143,7 @@
 						console.log('Received from remote: ' + message);
 						self.onMessage_({
 							data : {
-								keyCode : parseInt(message[0])
+								keyCode : parseInt(message)
 							}
 						});
 					});
